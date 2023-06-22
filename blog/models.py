@@ -27,4 +27,11 @@ class Blog(models.Model):
         return self.title
 
 
+class BloodDonor(models.Model):
+    # BLOOD_CHOICES = [("A+","A+"),("B+","")]
+    name = models.CharField(max_length=100)
+    age = models.IntegerField()
+    gender = models.CharField(max_length=64)
+    bloodgroup = models.CharField(max_length=32)
+    phone = models.BigIntegerField()
 

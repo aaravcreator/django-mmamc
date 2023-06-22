@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue CRUD App</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div id="app">
+    <div>
+        <h1>CRUD Component</h1>
+        <form @submit.prevent="createItem">
+          <input v-model="newItem" type="text" name="name" placeholder="New Item" required>
+          <!-- <input type="text" name="" id=""> -->
+          <button type="submit">Create</button>
+        </form>
+  
+        <ul>
+          <li v-for="item in items" :key="item.id">
+            {{ item.name }}
+            <button @click="deleteItem(item.id)">Delete</button>
+          </li>
+        </ul>
+      </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script >
+
+new Vue({
+  el: '#app',
+  data() {
+    return {
+      items: [],
+      newItem: ''
+    };
+  },
+  mounted() {
+    this.readItems();
+  },
+  methods: {
+    readItems() {
+      fetch('http://localhost:8000/blog/api/blood_donor/')
+        .then(response => response.json())
+        .then(data => {
+          this.items = data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    createItem() {
+      fetch('http://localhost:8000/blog/api/blood_donor/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name: this.newItem })
+        })
+        .then(response => response.json())
+        .then(data => {
+          this.items.push(data);
+          this.newItem = '';
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    deleteItem(itemId) {
+      fetch(`http://localhost:8000/blog/api/blood_donor/${itemId}/`, {
+          method: 'DELETE'
+        })
+        .then(() => {
+          this.items = this.items.filter(item => item.id !== itemId);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  }
+});
+
+
+  </script>
+</body>
+
+</html>
